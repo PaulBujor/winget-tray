@@ -157,7 +157,8 @@ internal static class Cli
             case "--version":
             {
                 Con.Attach();
-                Con.Say("WinGetTray 1.1.0");
+                var version = typeof(App).Assembly.GetName().Version;
+                Con.Say($"WinGetTray {version?.ToString(3) ?? "unknown"}");
                 return 0;
             }
 
