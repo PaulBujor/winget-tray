@@ -40,7 +40,7 @@ jobs:
         run: >
           dotnet publish src/WinGetTray/WinGetTray.csproj -c Release -r win-x64
           -p:SelfContained=true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
-          -p:DebugType=none -o dist
+          -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none -o dist
 
       - name: Publish (framework-dependent, smaller)
         run: >
@@ -54,6 +54,16 @@ jobs:
           # copy, so the installer step still finds dist\WinGetTray.exe
           Copy-Item dist/WinGetTray.exe "WinGetTray-$v-win-x64.exe"
           Copy-Item dist-fd/WinGetTray.exe "WinGetTray-$v-win-x64-framework-dependent.exe"
+
+      - name: Smoke test the portable build
+        shell: pwsh
+        run: |
+          # WPF self-contained single-file needs its native bits extracted; this catches that
+          $out = & ".\WinGetTray-${{ steps.v.outputs.version }}-win-x64.exe" --version 2>&1
+          Write-Host $out
+          if ($LASTEXITCODE -ne 0 -or "$out" -notmatch "WinGetTray ${{ steps.v.outputs.version }}") {
+            throw "portable build failed to start: $out"
+          }
 
       - name: Install Inno Setup
         run: choco install innosetup --no-progress -y
@@ -78,7 +88,8 @@ jobs:
             $h = (Get-FileHash $f -Algorithm SHA256).Hash.ToLower()
             "$h  $(Split-Path $f -Leaf)"
           }
-          $lines | Set-Content SHA256SUMS.txt
+          # LF line endings so sha256sum -c works as well as certutil
+          [System.IO.File]::WriteAllText((Join-Path $PWD 'SHA256SUMS.txt'), (($lines -join "`n") + "`n"))
           Get-Content SHA256SUMS.txt
 
       - uses: softprops/action-gh-release@v2
