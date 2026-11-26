@@ -26,7 +26,26 @@ no dependency on a Linux-side tooling stack.
 
 ## Install
 
-Download `WinGetTray.exe` from the [latest CI artifact](../../actions/workflows/ci.yml) or build it:
+Grab the latest release: **https://github.com/PaulBujor/winget-tray/releases/latest**
+
+| Asset | What it is |
+| --- | --- |
+| `WinGetTray-<ver>-win-x64.exe` | Portable, self-contained (~68 MB). Double-click, no runtime to install |
+| `WinGetTray-Setup-<ver>.exe` | Installer (~63 MB): per-user install, Start Menu entry, optional desktop icon, optional start at sign-in, uninstaller |
+| `WinGetTray-<ver>-win-x64-framework-dependent.exe` | Small (~7 MB), needs the **.NET 10 Desktop Runtime** |
+| `SHA256SUMS.txt` | Verify with `sha256sum -c SHA256SUMS.txt` |
+
+The installer defaults to `%LOCALAPPDATA%\Programs\WinGetTray` (no admin prompt; the wizard can switch
+to all users), stops a running instance before replacing files, repoints an existing sign-in entry at
+the installed exe, and uninstalls cleanly.
+
+Smarter alternative to the portable exe — use winget once the manifest lands:
+
+```powershell
+winget install PaulBujor.WinGetTray   # not published to winget yet
+```
+
+### Build from source
 
 ```powershell
 git clone https://github.com/PaulBujor/winget-tray
@@ -34,9 +53,8 @@ cd winget-tray
 dotnet publish src/WinGetTray/WinGetTray.csproj -c Release -o out
 ```
 
-Run `out\WinGetTray.exe`. It needs the **.NET 10 Desktop Runtime** (framework-dependent single file,
-about 7 MB — most of that is WPF-UI's embedded Fluent theme and icon set). To have it start
-automatically, right-click the tray icon → **Start with Windows**.
+Run `out\WinGetTray.exe`. That build is framework-dependent (needs the .NET 10 Desktop Runtime,
+about 7 MB — most of it WPF-UI's embedded Fluent theme and icon set).
 
 ## CLI
 
