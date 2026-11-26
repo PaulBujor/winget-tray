@@ -43,7 +43,8 @@
                          SelectionChanged="List_SelectionChanged">
                 <ui:ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,2">
+                        <!-- Inset text from the row edge so it clears the selection indicator. -->
+                        <Grid Margin="14,9,14,9">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
