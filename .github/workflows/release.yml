@@ -51,8 +51,9 @@ jobs:
         shell: pwsh
         run: |
           $v = "${{ steps.v.outputs.version }}"
-          Move-Item dist/WinGetTray.exe "WinGetTray-$v-win-x64.exe"
-          Move-Item dist-fd/WinGetTray.exe "WinGetTray-$v-win-x64-framework-dependent.exe"
+          # copy, so the installer step still finds dist\WinGetTray.exe
+          Copy-Item dist/WinGetTray.exe "WinGetTray-$v-win-x64.exe"
+          Copy-Item dist-fd/WinGetTray.exe "WinGetTray-$v-win-x64-framework-dependent.exe"
 
       - name: Install Inno Setup
         run: choco install innosetup --no-progress -y
