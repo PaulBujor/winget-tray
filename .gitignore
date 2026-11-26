@@ -21,3 +21,5 @@ Thumbs.db
 
 # locally built binary kept next to the source for autostart
 /WinGetTray.exe
+dist/
+dist-fd/

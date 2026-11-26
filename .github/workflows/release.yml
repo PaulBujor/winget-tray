@@ -1,0 +1,99 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to create, e.g. v1.2.0"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Resolve version
+        id: v
+        shell: pwsh
+        run: |
+          $tag = if ("${{ inputs.tag }}") { "${{ inputs.tag }}" } else { "${{ github.ref_name }}" }
+          $version = $tag.TrimStart('v')
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+          "version=$version" >> $env:GITHUB_OUTPUT
+          Write-Host "building release $tag ($version)"
+
+      - name: Test
+        run: dotnet test WinGetTray.sln -c Release
+
+      - name: Publish (self-contained, no .NET runtime needed)
+        run: >
+          dotnet publish src/WinGetTray/WinGetTray.csproj -c Release -r win-x64
+          -p:SelfContained=true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
+          -p:DebugType=none -o dist
+
+      - name: Publish (framework-dependent, smaller)
+        run: >
+          dotnet publish src/WinGetTray/WinGetTray.csproj -c Release -r win-x64
+          -p:SelfContained=false -p:PublishSingleFile=true -p:DebugType=none -o dist-fd
+
+      - name: Name the portable builds
+        shell: pwsh
+        run: |
+          $v = "${{ steps.v.outputs.version }}"
+          Move-Item dist/WinGetTray.exe "WinGetTray-$v-win-x64.exe"
+          Move-Item dist-fd/WinGetTray.exe "WinGetTray-$v-win-x64-framework-dependent.exe"
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          & $iscc "/DAppVersion=${{ steps.v.outputs.version }}" "installer\WinGetTray.iss"
+          if ($LASTEXITCODE -ne 0) { throw "ISCC failed with $LASTEXITCODE" }
+
+      - name: Checksums
+        shell: pwsh
+        run: |
+          $v = "${{ steps.v.outputs.version }}"
+          $files = @(
+            "WinGetTray-$v-win-x64.exe",
+            "WinGetTray-$v-win-x64-framework-dependent.exe",
+            "dist\WinGetTray-Setup-$v.exe"
+          )
+          $lines = foreach ($f in $files) {
+            $h = (Get-FileHash $f -Algorithm SHA256).Hash.ToLower()
+            "$h  $(Split-Path $f -Leaf)"
+          }
+          $lines | Set-Content SHA256SUMS.txt
+          Get-Content SHA256SUMS.txt
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.v.outputs.tag }}
+          name: WinGetTray ${{ steps.v.outputs.version }}
+          generate_release_notes: true
+          body: |
+            Run **WinGetTray-${{ steps.v.outputs.version }}-win-x64.exe** for the portable build, or
+            **WinGetTray-Setup-${{ steps.v.outputs.version }}.exe** to install it (Start Menu shortcut,
+            uninstaller, optional sign-in start).
+
+            The portable and setup builds are self-contained — no .NET runtime required.
+            The `-framework-dependent` build is smaller but needs the .NET 10 Desktop Runtime.
+          files: |
+            WinGetTray-${{ steps.v.outputs.version }}-win-x64.exe
+            WinGetTray-${{ steps.v.outputs.version }}-win-x64-framework-dependent.exe
+            dist/WinGetTray-Setup-${{ steps.v.outputs.version }}.exe
+            SHA256SUMS.txt
