@@ -1,6 +1,8 @@
 // Entry point: CLI modes for tooling/verification, otherwise the tray + window.
 using System.Text.Json;
 using System.Windows;
+using Wpf.Ui.Appearance;
+using Wpf.Ui.Markup;
 using WinForms = System.Windows.Forms;
 
 namespace WinGetTray;
@@ -15,6 +17,12 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+        // Fluent theme matching the user's light/dark setting
+        Resources.MergedDictionaries.Insert(0, new ThemesDictionary
+        {
+            Theme = Theme.IsDark ? ApplicationTheme.Dark : ApplicationTheme.Light,
+        });
 
         var args = e.Args;
         var isCli = args.Length > 0 &&

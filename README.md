@@ -2,6 +2,8 @@
 
 A small Windows 11 tray app for [winget](https://github.com/microsoft/winget-cli): it tells you when
 updates are available, shows them in a list you can search, and installs them (one, several, or all).
+The window is a real Fluent one — [WPF-UI](https://github.com/lepoco/wpfui) `FluentWindow` with a Mica
+backdrop, so it matches Windows 11 instead of imitating it.
 
 ![Windows 11 style window listing available winget upgrades](docs/screenshot.png)
 
@@ -32,8 +34,9 @@ cd winget-tray
 dotnet publish src/WinGetTray/WinGetTray.csproj -c Release -o out
 ```
 
-Run `out\WinGetTray.exe`. It needs the **.NET 10 Desktop Runtime** (framework-dependent build, ~300 KB
-on disk). To have it start automatically, right-click the tray icon → **Start with Windows**.
+Run `out\WinGetTray.exe`. It needs the **.NET 10 Desktop Runtime** (framework-dependent single file,
+about 7 MB — most of that is WPF-UI's embedded Fluent theme and icon set). To have it start
+automatically, right-click the tray icon → **Start with Windows**.
 
 ## CLI
 
@@ -68,11 +71,13 @@ Log: `%LOCALAPPDATA%\WinGetTray\winget-tray.log` (rotated at 1 MB).
   that machine-scope installers don't fail silently.
 - Windows-only, x64. No installer, no auto-update: Dependabot keeps dependencies fresh, you rebuild
   or re-download when you care.
+- The only runtime dependency is WPF-UI (MIT, ~6 MB of embedded Fluent resources). That is what makes
+  the window a genuine `FluentWindow`; dropping it would mean hand-rolled styling again.
 
 ## Layout
 
 ```
-src/WinGetTray        WPF window + tray icon (WinForms NotifyIcon only)
+src/WinGetTray        Fluent window (WPF-UI) + tray icon (WinForms NotifyIcon only)
 src/WinGetTray.Core   settings, logging, winget invocation, parsing, filtering (no UI)
 tests/                xunit tests over the parser and filter, incl. a real winget output fixture
 tools/make-icon.py    regenerates src/WinGetTray/app.ico

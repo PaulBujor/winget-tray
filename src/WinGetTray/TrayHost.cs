@@ -104,7 +104,7 @@ internal sealed class TrayHost : IDisposable
     {
         Log.Write($"tray start v1.1 (autoInstall={_settings.AutoInstall}, intervalHours={_settings.IntervalHours})");
 
-        var theme = Theme.Current;
+        var theme = Theme.Tray;
         _menu.Renderer = new WinForms.ToolStripProfessionalRenderer(
             new MenuColors(Dto(theme.Card), Dto(theme.Stroke), Dto(theme.Hover)));
         _menu.ShowImageMargin = false;
@@ -177,7 +177,7 @@ internal sealed class TrayHost : IDisposable
         exit.Click += (_, _) => ExitApp();
         _menu.Items.Add(exit);
 
-        var p = Theme.Current;
+        var p = Theme.Tray;
         _menu.ForeColor = Color.FromArgb(p.Text.R, p.Text.G, p.Text.B);
         _menu.BackColor = Color.FromArgb(p.Card.R, p.Card.G, p.Card.B);
     }

@@ -1,12 +1,13 @@
 // Updates window: filterable list of pending upgrades, update one/many/all.
+// Fluent look comes from WPF-UI (FluentWindow + ControlsDictionary), no custom theming here.
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
+using Wpf.Ui.Controls;
 
 namespace WinGetTray;
 
-public partial class UpdatesWindow : Window
+public partial class UpdatesWindow : FluentWindow
 {
     private readonly Action<IReadOnlyList<Upgrade>> _onUpdate;
     private readonly Action _onRefresh;
@@ -18,34 +19,17 @@ public partial class UpdatesWindow : Window
         _onRefresh = onRefresh;
 
         InitializeComponent();
-        ApplyTheme();
 
-        SourceInitialized += (_, _) => Theme.ApplyWindowHints(this);
         Loaded += (_, _) => { ApplyFilter(); SearchBox.Focus(); };
         PreviewKeyDown += (_, e) =>
         {
             if (e.Key == Key.Escape) Close();
-            if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control) { SearchBox.Focus(); e.Handled = true; }
+            if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                SearchBox.Focus();
+                e.Handled = true;
+            }
         };
-    }
-
-    private void ApplyTheme()
-    {
-        var p = Theme.Current;
-        Background = Theme.Brush(p.Window);
-        Resources["WindowBg"] = Theme.Brush(p.Window);
-        Resources["CardBg"] = Theme.Brush(p.Card);
-        Resources["StrokeBrush"] = Theme.Brush(p.Stroke);
-        Resources["TextPrimaryBrush"] = Theme.Brush(p.Text);
-        Resources["TextSecondaryBrush"] = Theme.Brush(p.TextSecondary);
-        Resources["HoverBrush"] = Theme.Brush(p.Hover);
-        Resources["AccentBrush"] = Theme.Brush(p.Accent);
-        Resources["AccentTextBrush"] = Theme.Brush(p.AccentText);
-
-        // Selection fill: accent washed over the card colour.
-        var selected = Color.FromArgb(0x38, p.Accent.R, p.Accent.G, p.Accent.B);
-        Resources["SelectedBrush"] = Theme.Brush(selected);
-        Resources["ScrollThumbBrush"] = Theme.Brush(Color.FromArgb(0x66, p.TextSecondary.R, p.TextSecondary.G, p.TextSecondary.B));
     }
 
     /// <summary>New data from a check; keeps the current filter text.</summary>
@@ -72,8 +56,6 @@ public partial class UpdatesWindow : Window
         var filtered = UpgradeFilter.Apply(_all, q);
 
         List.ItemsSource = filtered;
-        SearchPlaceholder.Visibility = q.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
-
         EmptyText.Text = _all.Count == 0 ? "Nothing to update" : "No matches";
         EmptyText.Visibility = filtered.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
