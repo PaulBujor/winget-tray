@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Tray notifier + updates window for winget.
+       WPF for the window so it matches Windows 11, WinForms only for NotifyIcon.
+       Framework-dependent single file, no installer. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>WinGetTray</AssemblyName>
+    <RootNamespace>WinGetTray</RootNamespace>
+    <Version>1.1.0</Version>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!-- WinForms only hosts the tray icon; the WPF window needs the manifest DPI awareness. -->
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WinGetTray.Core\WinGetTray.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Window icon (Start Menu / taskbar icon comes from ApplicationIcon). -->
+    <Resource Include="app.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- WinForms/WPF mixing: keep their namespaces out of the global usings so
+         Application/Color/Brush/KeyEventArgs stay unambiguous. -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
+</Project>

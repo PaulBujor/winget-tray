@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- No UI: settings, logging, winget invocation, parsing, filtering. Keep it unit-testable. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>WinGetTray.Core</AssemblyName>
+    <RootNamespace>WinGetTray</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="WinGetTray.Core.Tests" />
+    <InternalsVisibleTo Include="WinGetTray" />
+  </ItemGroup>
+
+</Project>

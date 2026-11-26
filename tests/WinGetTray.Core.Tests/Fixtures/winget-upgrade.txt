@@ -1,0 +1,34 @@
+Name                                                         Id                            Version         Available     Source
+-------------------------------------------------------------------------------------------------------------------------------
+Bruno 4.0.0                                                  Bruno.Bruno                   4.0.0           4.4.0         winget
+Claude Code                                                  Anthropic.ClaudeCode          2.1.231         2.1.332       winget
+Docker Desktop                                               Docker.DockerDesktop          4.84.0          4.100.1       winget
+EA app                                                       ElectronicArts.EADesktop      13.832.0.6345   13.836.0.6349 winget
+FFmpeg                                                       Gyan.FFmpeg                   9.0             9.1           winget
+Git                                                          Git.Git                       2.55.0.3        2.56.1        winget
+GitHub CLI                                                   GitHub.cli                    2.97.0          2.106.0       winget
+GOG GALAXY (64-bit)                                          GOG.Galaxy                    2.1.7.22        2.1.10.56     winget
+Google Chrome                                                Google.Chrome.EXE             158.0.8127.38   158.0.8127.89 winget
+Java 8 Update 501 (64-bit)                                   Oracle.JavaRuntimeEnvironment 8.0.5010.8      8.0.5130.4    winget
+JetBrains Toolbox                                            JetBrains.Toolbox             3.9.1.89198     3.9.2.0       winget
+Microsoft .NET SDK 10.0.303 (x64)                            Microsoft.DotNet.SDK.10       10.0.303        10.0.404      winget
+Microsoft GameInput                                          Microsoft.GameInput           4.0.306.0       4.1.315       winget
+Microsoft Visual C++ v14 Redistributable (x64) - 14.51.36247 Microsoft.VCRedist.2015+.x64  14.51.36247.0   14.52.37029.0 winget
+Microsoft Visual C++ v14 Redistributable (x86) - 14.51.36247 Microsoft.VCRedist.2015+.x86  14.51.36247.0   14.52.37029.0 winget
+Microsoft Visual Studio Code (User)                          Microsoft.VisualStudioCode    1.145.0         1.148.0       winget
+Neovim                                                       Neovim.Neovim                 0.12.4          0.12.6        winget
+Node.js                                                      OpenJS.NodeJS.24              24.18.1         24.22.3       winget
+Obsidian                                                     Obsidian.Obsidian             1.13.4          1.15.1        winget
+Oh My Posh                                                   JanDeDobbeleer.OhMyPosh       30.0.0.0        33.4.0        winget
+Open Design                                                  Powerformer.OpenDesign        0.16.1          0.27.2        winget
+pnpm                                                         pnpm.pnpm                     11.15.1         12.23.0       winget
+PowerShell 7.6.9.0-x64                                       Microsoft.PowerShell          7.6.9.0         7.7.0.0       winget
+PowerToys (Preview) x64                                      Microsoft.PowerToys           0.100.2         0.102.3101    winget
+RipGrep MSVC                                                 BurntSushi.ripgrep.MSVC       15.2.0          16.0.0        winget
+Rockstar Games Launcher                                      RockstarGames.Launcher        1.0.108.2970    1.0.110.3150  winget
+Tailscale                                                    Tailscale.Tailscale           1.104.6         1.104.7       winget
+Ubisoft Connect                                              Ubisoft.Connect               < 175.2.0.13423 175.2.0.13423 winget
+WinDirStat 2.7.0                                             WinDirStat.WinDirStat         2.7.0           2.9.3         winget
+Windows Subsystem for Linux                                  Microsoft.WSL                 2.7.11.0        3.0.5         winget
+Zed                                                          ZedIndustries.Zed             1.29.3          1.30.2        winget
+31 upgrades available.
