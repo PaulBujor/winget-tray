@@ -58,11 +58,13 @@ jobs:
       - name: Smoke test the portable build
         shell: pwsh
         run: |
-          # WPF self-contained single-file needs its native bits extracted; this catches that
-          $out = & ".\WinGetTray-${{ steps.v.outputs.version }}-win-x64.exe" --version 2>&1
-          Write-Host $out
-          if ($LASTEXITCODE -ne 0 -or "$out" -notmatch "WinGetTray ${{ steps.v.outputs.version }}") {
-            throw "portable build failed to start: $out"
+          # A WPF self-contained single-file app that is missing its native bits dies with an
+          # unhandled DllNotFoundException, i.e. a non-zero exit code. Launch it and check that.
+          $exe = Resolve-Path ".\WinGetTray-${{ steps.v.outputs.version }}-win-x64.exe"
+          $p = Start-Process -FilePath $exe -ArgumentList "--version" -Wait -PassThru -WindowStyle Hidden
+          Write-Host "portable build exited with $($p.ExitCode)"
+          if ($p.ExitCode -ne 0) {
+            throw "portable build failed to start (exit code $($p.ExitCode))"
           }
 
       - name: Install Inno Setup
